@@ -41,7 +41,16 @@ tasks {
         password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
     }
 
+    task("fetchToken", Exec::class) {
+        group = "fetchToken"
+
+        executable = "export"
+        args = listOf("PUBLISH_TOKEN=pass", "jetbrains-plugin-token")
+    }
+
     publishPlugin {
+        dependsOn("fetchToken")
         token.set(System.getenv("PUBLISH_TOKEN"))
+        channels.set(listOf("Stable"))
     }
 }

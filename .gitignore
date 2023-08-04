@@ -17,6 +17,9 @@ out/
 !**/src/test/**/out/
 .idea
 .run
+private.pem
+private_encrypted.pem
+chain.crt
 
 ### Eclipse ###
 .apt_generated
