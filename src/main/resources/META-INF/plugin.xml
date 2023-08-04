@@ -1,0 +1,63 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+	<!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+	<id>fr.imacaron.keylogger</id>
+
+	<!-- Public plugin name should be written in Title Case.
+		 Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+	<name>Keylogger</name>
+
+	<!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+	<vendor email="denisft77@gmzil.com">IMacaron</vendor>
+
+	<extensions defaultExtensionNs="com.intellij">
+		<backgroundPostStartupActivity implementation="fr.imacaron.keylogger.KeyLoggerPlugin"/>
+	</extensions>
+
+	<actions>
+		<action
+				id="KeyLogger.StartLogging"
+				class="fr.imacaron.keylogger.KeyloggerStartHandler"
+				text="Start Recording"
+				description="Start the record of the current file keystroke."
+				icon="AllIcons.Actions.New"
+		>
+				<add-to-group group-id="EditorPopupMenu" anchor="first"/>
+		</action>
+		<action
+				id="KeyLogger.EndLogging"
+				class="fr.imacaron.keylogger.KeyLoggerStopHandler"
+				text="Stop Recording"
+				description="Stop the record of the current file keystroke."
+				icon="AllIcons.Actions.New"
+		>
+			<add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="KeyLogger.StartLogging"/>
+		</action>
+		<action
+			id="KeyLogger.Replay"
+			class="fr.imacaron.keylogger.KeyLoggerReplayHandler"
+			text="Replay"
+			description="Replay the logging of the current file if it exist"
+			icon="AllIcons.Actions.Play_last"
+			>
+			<add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="KeyLogger.EndLogging"/>
+		</action>
+	</actions>
+
+	<!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+		 Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
+		 Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+	<description><![CDATA[
+    Log key into a file so you can replay it later (to record for example)
+  ]]></description>
+
+	<!-- Product and plugin compatibility requirements.
+		 Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+	<depends>com.intellij.modules.platform</depends>
+
+	<!-- Extension points defined by the plugin.
+		 Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+	<extensions defaultExtensionNs="com.intellij">
+
+	</extensions>
+</idea-plugin>
