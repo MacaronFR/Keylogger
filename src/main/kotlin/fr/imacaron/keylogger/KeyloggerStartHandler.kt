@@ -20,9 +20,10 @@ class KeyloggerStartHandler: AnAction() {
                     projects.find { it.name == e.project?.name }?.listeners?.remove(it)
                 }
             }
-            return
+        } ?: run {
+            e.presentation.isVisible = true
         }
-        e.presentation.isVisible = true
+        e.presentation.isEnabled = projects.find { it.name == e.project?.name } != null
     }
 
     override fun actionPerformed(e: AnActionEvent) {
@@ -42,7 +43,7 @@ class KeyloggerStartHandler: AnAction() {
         }
         f.parentFile.mkdirs()
         f.createNewFile()
-        f.writeText("0:->${editor.document.text}\n")
+        f.writeText("0:->${editor.document.text.sanitize()}\n")
 
         val listener = LoggingDocumentListener(f, true, editor.virtualFile.path)
 

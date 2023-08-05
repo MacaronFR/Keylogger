@@ -20,7 +20,7 @@
 				class="fr.imacaron.keylogger.KeyloggerStartHandler"
 				text="Start Recording"
 				description="Start the record of the current file keystroke."
-				icon="AllIcons.Actions.New"
+				icon="AllIcons.Actions.Resume"
 		>
 				<add-to-group group-id="EditorPopupMenu" anchor="first"/>
 		</action>
@@ -29,7 +29,7 @@
 				class="fr.imacaron.keylogger.KeyLoggerStopHandler"
 				text="Stop Recording"
 				description="Stop the record of the current file keystroke."
-				icon="AllIcons.Actions.New"
+				icon="AllIcons.Actions.Suspend"
 		>
 			<add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="KeyLogger.StartLogging"/>
 		</action>
@@ -38,7 +38,7 @@
 			class="fr.imacaron.keylogger.KeyLoggerReplayHandler"
 			text="Replay"
 			description="Replay the logging of the current file if it exist"
-			icon="AllIcons.Actions.Play_last"
+			icon="AllIcons.Actions.Refresh"
 			>
 			<add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="KeyLogger.EndLogging"/>
 		</action>

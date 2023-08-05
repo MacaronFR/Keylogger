@@ -15,6 +15,7 @@ class KeyLoggerReplayHandler: AnAction() {
         val relativePath = editor.virtualFile.path.removePrefix(editor.project?.basePath ?: "")
         val f = File(editor.project?.basePath + "/keylogger/" + relativePath + ".keylog")
         e.presentation.isVisible = f.exists() && !(projects.find { it.name == editor.project?.name }?.listeners?.find { it.originalFile == editor.virtualFile.path }?.isRecording ?: false)
+        e.presentation.isEnabled = projects.find { it.name == e.project?.name } != null
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -24,7 +25,6 @@ class KeyLoggerReplayHandler: AnAction() {
         val relativePath = editor.virtualFile.path.removePrefix(editor.project?.basePath ?: "")
         val f = File(editor.project?.basePath + "/keylogger/" + relativePath + ".keylog")
         val lines = f.readLines()
-        println(lines)
 
         GlobalScope.launch {
             WriteCommandAction.runWriteCommandAction(editor.project!!) {
@@ -32,14 +32,23 @@ class KeyLoggerReplayHandler: AnAction() {
             }
             lines.forEach {
                 val match = "^([0-9]+):(.*)->(.*)$".toRegex().find(it) ?: return@launch
-                println(match.groupValues)
                 val index = match.groups[1]!!.value.toInt()
-                println(index)
-                WriteCommandAction.runWriteCommandAction(editor.project!!) {
-                    editor.document.deleteString(index, index + match.groups[2]!!.value.length)
+                val toDelete = match.groups[2]!!.value
+                val toAdd = match.groups[3]!!.value.desanitize()
+                val selection = editor.selectionModel
+                if(toDelete.length > 1) {
+                    WriteCommandAction.runWriteCommandAction(editor.project!!) {
+                        selection.setSelection(index, index + toDelete.length)
+                    }
+                    delay(100)
                 }
                 WriteCommandAction.runWriteCommandAction(editor.project!!) {
-                    editor.document.insertString(index, match.groups[3]!!.value.desanitize())
+                    editor.document.deleteString(index, index + toDelete.length)
+                }
+                WriteCommandAction.runWriteCommandAction(editor.project!!) {
+                    editor.document.insertString(index, toAdd)
+                    val caret = editor.caretModel
+                    caret.primaryCaret.moveToOffset(index + toAdd.length)
                 }
                 delay(100)
             }
