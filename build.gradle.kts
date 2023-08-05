@@ -1,5 +1,3 @@
-import java.io.ByteArrayOutputStream
-
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.0"
@@ -37,34 +35,24 @@ tasks {
         untilBuild.set("232.*")
     }
 
-    signPlugin {
-        certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
-        privateKey.set(System.getenv("PRIVATE_KEY"))
-        password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
-    }
-
     publishPlugin {
-        val out = ByteArrayOutputStream()
 
-        exec {
+        val tokenString = providers.exec {
             commandLine = listOf("pass", "show", "jetbrains-plugin-token")
-            standardOutput = out
-        }
+        }.standardOutput.asText.get().removeSuffix("\n")
 
-        token.set(out.toString().removeSuffix("\n"))
+        token.set(tokenString)
         channels.set(listOf("Stable"))
     }
 
     signPlugin {
-        val out = ByteArrayOutputStream()
 
-        exec {
+        val pass = providers.exec {
             commandLine = listOf("pass", "show", "jetbrains-private-key-password")
-            standardOutput = out
-        }
+        }.standardOutput.asText.get().removeSuffix("\n")
 
         privateKey.set(file("./private.pem").readText())
-        password.set(out.toString().removeSuffix("\n"))
+        password.set(pass)
         certificateChain.set(file("./chain.crt").readText())
     }
 }
